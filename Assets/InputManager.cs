@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour {
         RaycastHit hit;
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log("Mouse Down");
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 Debug.Log("Clicked on the UI");
@@ -23,9 +24,12 @@ public class InputManager : MonoBehaviour {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 10000))
             {
+
                 SelectableGameObject selObj = hit.transform.GetComponent<SelectableGameObject>();
+                Debug.Log("Selected:" + selObj);
                 if (selObj != null)
                 {
+                    Debug.Log("Selected:" + selObj);
                     selObj.OnSelected();
                 }
             }
