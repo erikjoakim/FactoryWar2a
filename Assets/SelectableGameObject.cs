@@ -16,10 +16,14 @@ public class SelectableGameObject : MonoBehaviour {
 
     virtual public void OnSelected()
     {
-        GameManager.selectedObject = gameObject;
+        GameManager.selectedObject = this;
     }
 
     virtual public void OnDeSelected()
+    {
+
+    }
+    virtual public void OnLeftClick(Vector3 pos)
     {
 
     }

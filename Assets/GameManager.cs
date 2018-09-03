@@ -5,8 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public static GameManager instance = null;
-    private static GameObject _selObj = null;
-    public static GameObject selectedObject
+    private static SelectableGameObject _selObj = null;
+    public static SelectableGameObject selectedObject
     {
         get { return _selObj; }
         set
@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    //***********
+    //Implement Singleton
     private void Awake()
     {
         if (instance == null)

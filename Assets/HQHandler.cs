@@ -44,7 +44,7 @@ public class HQHandler : SelectableGameObject {
 
     void supportUnits()
     {
-        Debug.Log("Support Units");
+        //Debug.Log("Support Units");
         // AmmoStorage would be updated from other GameObject
         if (ammoStorage > 0)
         {
@@ -82,7 +82,7 @@ public class HQHandler : SelectableGameObject {
             if (thisHit.transform.gameObject.GetComponent<GruntHandler>())
             {
                 list.Add(thisHit.transform.gameObject.GetComponent<GruntHandler>());
-                Debug.Log("Found Grunt");
+                //Debug.Log("Found Grunt");
             }
         }
         return list;
