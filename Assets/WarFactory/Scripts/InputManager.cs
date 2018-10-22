@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour {
 
     public enum BuildingTypes
     {
-        Farm, Factory, Road
+        Farm, Factory, Road, Armoury
     }
     public enum InputStatus
     {
@@ -78,7 +78,7 @@ public class InputManager : MonoBehaviour {
             }
             if (roadCreator != null)
             {
-                roadCreator.RemoveLastAnchorPoint();
+                //roadCreator.RemoveLastAnchorPoint();
                 roadCreator = null;
             }
             if (objectToCreate != null)
@@ -179,15 +179,17 @@ public class InputManager : MonoBehaviour {
                     objectToCreate.layer = LayerMask.NameToLayer("Default");
                     if (objectToCreate.GetComponent<Connectable>())
                     {
-                        objectToCreate.GetComponent<Connectable>().AddRoadConnection();
-                        Source source = objectToCreate.GetComponent<Source>();                        
+                        Connectable conn = objectToCreate.GetComponent<Connectable>();
+                        conn.AddRoadConnection();
+                        conn.OnObjectPlaced();
                     }
+                    
+                    string name = objectToCreate.name;
+                    name = name.Substring(0, name.IndexOf('('));
+                    Debug.Log("Object Name: " + name);
                     objectToCreate = null;
-                }
-
-                if (Physics.Raycast(ray, out hit, 10000))
-                {
-                    objectToCreate = Instantiate((GameObject)Resources.Load("Farm"), hit.point + new Vector3(0, 0.3f, 0), Quaternion.identity);
+                
+                    objectToCreate = Instantiate((GameObject)Resources.Load(name), hit.point + new Vector3(0, 0.3f, 0), Quaternion.identity);
                     objectToCreate.layer = LayerMask.NameToLayer("Ignore Raycast");
                 }
             }
@@ -231,7 +233,7 @@ public class InputManager : MonoBehaviour {
         #endregion
 
         #region Mouse Right Click Handling
-        if (Input.GetMouseButtonDown(1))
+        /*if (Input.GetMouseButtonDown(1))
         {
             if (roadCreator != null)
             {
@@ -256,7 +258,7 @@ public class InputManager : MonoBehaviour {
 
                 }
             }
-        }
+        }*/
         #endregion
 
         #endregion
@@ -296,6 +298,17 @@ public class InputManager : MonoBehaviour {
                     //Debug.Log("Create Path: " + hit.point);
                     roadCreator.CreatePath(hit.point);
                 }*/
+                break;
+            case BuildingTypes.Armoury:
+                Debug.Log("Create Armoury");
+                buildCanvas.gameObject.SetActive(false);
+
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit, 10000))
+                {
+                    objectToCreate = Instantiate((GameObject)Resources.Load("Armoury2"), hit.point + new Vector3(0, 0.3f, 0), Quaternion.identity);
+                    objectToCreate.layer = LayerMask.NameToLayer("Ignore Raycast");
+                }
                 break;
             default:
                 break;

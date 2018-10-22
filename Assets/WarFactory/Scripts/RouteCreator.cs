@@ -15,7 +15,7 @@ public class RouteCreator : MonoBehaviour
 
     internal void DestroyMe()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     internal void SetMenuCanvas(Canvas routeCanvas)
@@ -24,6 +24,15 @@ public class RouteCreator : MonoBehaviour
         canvas = routeCanvas;
         doneBtn = canvas.transform.Find("Panel").Find("Button").GetComponent<Button>();
         doneBtn.onClick.AddListener(OnDoneSelecting);
+        List<Dropdown.OptionData> data = new List<Dropdown.OptionData>();
+        Dropdown.OptionData tmpd = new Dropdown.OptionData();
+        foreach (string item in Enum.GetNames(typeof(ResourceTypes)))
+        {
+            data.Add(new Dropdown.OptionData(item));
+        }
+        Dropdown tmpDD = canvas.transform.Find("Panel").Find("Cargo").GetComponent<Dropdown>();
+        tmpDD.ClearOptions();
+        tmpDD.AddOptions(data);
     }
 
     internal void AddSelectedObject(GameObject gameObject)
@@ -63,9 +72,12 @@ public class RouteCreator : MonoBehaviour
         if (vehicle != null && start != null && end != null)
         {
             Debug.Log("Create Route");
-            vehicle.route.routeSegments.Add(new RouteSegment(start));
-            vehicle.route.routeSegments.Add(new RouteSegment(end));
-
+            ResourceTypes resourceType = (ResourceTypes) Enum.Parse(typeof(ResourceTypes), canvas.transform.Find("Panel").Find("Cargo").Find("Label").GetComponent<Text>().text);
+            RouteSegment.RouteSegmentAction routeAction = (RouteSegment.RouteSegmentAction) Enum.Parse(typeof(RouteSegment.RouteSegmentAction), canvas.transform.Find("Panel").Find("Action").Find("Label").GetComponent<Text>().text);
+            float amount = float.Parse(canvas.transform.Find("Panel").Find("CargoAmount").Find("Text").GetComponent<Text>().text);
+            vehicle.route.routeSegments.Add(new RouteSegment(start,routeAction, resourceType, 10));
+            vehicle.route.routeSegments.Add(new RouteSegment(end, RouteSegment.RouteSegmentAction.Unload, ResourceTypes.Bow, 10));
+            vehicle.status = Vehicle.VehicleStatus.Moving;
         }
         Destroy(gameObject);
     }

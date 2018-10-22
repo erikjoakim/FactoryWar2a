@@ -5,9 +5,9 @@ using UnityEngine;
 public class Source : Storage {
 
     public int numberOfParallelProductions = 1;
-    public float produceTime = 1;
+    public float produceTime = 3;
     
-    public bool isProducing = false;
+    public bool isProducing = true;
     [SerializeField]
     private bool _productionIsRunning = false;
     
@@ -17,7 +17,8 @@ public class Source : Storage {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	override public void Update () {
+        base.Update();
         if (isProducing && !_productionIsRunning && currentStorageStacks < MaxStorageStacks)
         {
             Debug.Log("Start Production");
@@ -45,14 +46,19 @@ public class Source : Storage {
             if (currentStorageStacks < MaxStorageStacks)
             {
                 currentStorageStacks++;
+                CheckForProduction();
             }
             else
             {
-                isProducing = false;
                 _productionIsRunning = false;
                 yield break;
             }
             
         } while (isProducing);
+    }
+
+    public override void CheckForProduction()
+    {
+        base.CheckForProduction();
     }
 }

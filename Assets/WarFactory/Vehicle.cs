@@ -10,15 +10,23 @@ public class Vehicle : SelectableGameObject {
         Loading, Unloading, Moving, Idle
     }
     public VehicleStatus status = VehicleStatus.Idle;
-    public Road currentRoadTraveled;
-    public Route route;
-    public float speed=2f;
+
+
+    public float speed = 2f;
     //public bool isMoving = false;
-    public int currentRoadIndex=0;
-    public bool MovingForwardInIndex = true;
+
     public float updateIndex = 0.1f;
 
     public int maxCargoCapacity = 10;
+
+    //internal stuff for driving on road
+    public Route route;
+    public RouteSegment activeRouteSegment;
+    public Road currentRoadTraveled;
+    public int currentRoadIndex;
+    public int destinationIndex;
+
+    public bool MovingForwardInIndex = true;
 
     internal void AddRouteSegment(RouteSegment routeSegment)
     {
@@ -27,64 +35,151 @@ public class Vehicle : SelectableGameObject {
 
     [SerializeField]
     private int currentCargo = 0;
-
+    [SerializeField]
+    private int previouseRoadIndex = -1;
 
     // Use this for initialization
-    override protected void Start () {
+    override protected void Start() {
         base.Start();
         route = new Route();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (status == VehicleStatus.Moving)
-        {
-            //IF AT DOCK EXECUTE OnDepart for the CONNECTED OBJECT ?ORIGIN?
-            if (currentRoadIndex == 0 && MovingForwardInIndex) currentRoadIndex++;
-            if (currentRoadIndex == currentRoadTraveled.evenlySpacedPoints.Length-1 && !MovingForwardInIndex) currentRoadIndex--;
+    }
 
-            if ((currentRoadTraveled.evenlySpacedPoints[currentRoadIndex] - transform.position).magnitude < updateIndex)
+    private void Update()
+    {
+        if (route.active && route.routeSegments.Count > 0)
+        {
+            Debug.Log("Segment: " + activeRouteSegment);
+            //Check that we have a route and needed information
+            if (activeRouteSegment.road != null)
             {
-                if (currentRoadIndex < currentRoadTraveled.evenlySpacedPoints.Length-1 && currentRoadIndex > 0)
+                if (status == VehicleStatus.Moving)
                 {
-                    Debug.Log("Update destination Road Index");
-                    if (MovingForwardInIndex)
+                    //Debug.Log("DIst To Storage: " + (transform.position - activeRouteSegment.road.evenlySpacedPoints[activeRouteSegment.storageRoadIndex]).sqrMagnitude);
+                    //Check if we are at destination position
+                    if ((transform.position - activeRouteSegment.road.evenlySpacedPoints[activeRouteSegment.storageRoadIndex]).sqrMagnitude < 0.05f)
                     {
-                        currentRoadIndex++;
+                        Debug.Log("At Storage Road Index: " + activeRouteSegment.storageRoadIndex);
+                        transform.position = activeRouteSegment.road.evenlySpacedPoints[activeRouteSegment.storageRoadIndex];
+                        //WE ARE THERE
+                        switch (activeRouteSegment.action)
+                        {
+                            case RouteSegment.RouteSegmentAction.Load:
+                                status = VehicleStatus.Loading;
+                                Debug.Log("LOADING");
+                                activeRouteSegment.destinationStorage.OnVehicleArrive(this);
+                                break;
+                            case RouteSegment.RouteSegmentAction.Unload:
+                                status = VehicleStatus.Unloading;
+                                Debug.Log("UNLOADING");
+                                activeRouteSegment.destinationStorage.OnVehicleArrive(this);
+                                break;
+                            case RouteSegment.RouteSegmentAction.Waypoint:
+                                // GET NEW ROUTE
+                                UpdateActiveRouteSegment();
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     else
                     {
-                        currentRoadIndex--;
-                    }                    
-                    transform.position += (currentRoadTraveled.evenlySpacedPoints[currentRoadIndex] - transform.position).normalized * speed * Time.deltaTime;
-                }
-                else
-                {
-                    //Make sure we travel all the way...
-                    if ((currentRoadTraveled.evenlySpacedPoints[currentRoadIndex] - transform.position).magnitude > 0.1f)
-                    {
-                        updateIndex = 0.1f;
-                    }
-                    else
-                    {
-                        updateIndex = 0.5f;
-                        Debug.Log("At Destination");
-                        status = VehicleStatus.Unloading;
                         
-                        
-                        //TODO: Should check route for action
-                        //TODO: We are done on this road. Need to find a way to handle new road, or unload   
-                        //EXECUTE OnArrive() ON DESTINATION OBJECT. SET ORIGIN TO DESTINATION AND DESTINATION to next on route
+                        if (((transform.position - activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex]).sqrMagnitude < 0.05f) && (currentRoadIndex != activeRouteSegment.storageRoadIndex))
+                        {
+                            //Debug.Log("Close to Road Index->Update: " + currentRoadIndex);
+                            if (MovingForwardInIndex)
+                            {
+                                if (currentRoadIndex < activeRouteSegment.road.evenlySpacedPoints.Length - 1)
+                                {
+                                    previouseRoadIndex = currentRoadIndex;
+                                    currentRoadIndex++;
+                                }
+                            }
+                            else
+                            {
+                                if (currentRoadIndex > 0)
+                                {
+                                    previouseRoadIndex = currentRoadIndex;
+                                    currentRoadIndex--;
+                                }
+                            }
+                            
+                        }
+                        //Still not at Destination
+                        MoveVehicle();
                     }
                 }
             }
             else
             {
-                Debug.Log("Move");
-                transform.position += (currentRoadTraveled.evenlySpacedPoints[currentRoadIndex] - transform.position) * speed * Time.deltaTime;
+                //Get next Route Segment
+                Debug.Log("Update Segement 1");
+                UpdateActiveRouteSegment();
             }
         }
-	}
+    }
+
+
+
+    private void MoveVehicle()
+    {
+        float distTraveled = speed * Time.deltaTime;
+        //Debug.Log("Distance: " + distTraveled);
+        if (previouseRoadIndex == -1)
+        {
+            //Still trying to reach road
+            if (distTraveled > (activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex] - transform.position).magnitude)
+            {
+                transform.position = activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex];
+            } else
+                transform.position += (activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex] - transform.position).normalized * distTraveled;
+        }
+        else
+        {
+            while (distTraveled > GameManager.instance.roadSpacing)
+            {
+                if (activeRouteSegment.storageRoadIndex != currentRoadIndex)
+                {
+                    //We do still have points to go                
+                    if (MovingForwardInIndex)
+                    {
+                        previouseRoadIndex = currentRoadIndex;
+                        currentRoadIndex++;
+                    }
+                    else
+                    {
+                        previouseRoadIndex = currentRoadIndex;
+                        currentRoadIndex--;
+                    }
+                    distTraveled -= GameManager.instance.roadSpacing;
+                }
+                else
+                {
+                    //We will arrive at the destination this tick with breaking
+                    transform.position = activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex];
+                    distTraveled = 0;
+                }
+            }
+            //WE now know that distTraveled is less than roadSpacing
+            transform.position += (activeRouteSegment.road.evenlySpacedPoints[currentRoadIndex] - transform.position).normalized * distTraveled;
+        }
+    }
+
+    private void UpdateActiveRouteSegment()
+    {
+        activeRouteSegment = route.GetNextActiveSegment();
+        
+        currentRoadIndex = activeRouteSegment.road.ClosestPointOnRoad(transform.position).roadIndex;
+        if (currentRoadIndex > activeRouteSegment.storageRoadIndex)
+        {
+            MovingForwardInIndex = false;
+        }
+        else
+        {
+            MovingForwardInIndex = true;
+        }
+    }
+    
 
     internal void RemoveCargo()
     {
@@ -94,9 +189,9 @@ public class Vehicle : SelectableGameObject {
         }
         if (currentCargo == 0)
         {
-            //TODO Leave current LoadingDock
-            //origin.GetComponent<Storage>().OnVehicleDepart(this);
             status = VehicleStatus.Moving;
+            activeRouteSegment.destinationStorage.OnVehicleDepart(this);
+           UpdateActiveRouteSegment();
         }
     }
 
@@ -111,11 +206,13 @@ public class Vehicle : SelectableGameObject {
         {
             currentCargo++;
         }
+        //TODO: THIS IS WRONG SHOULD CHECK AGAINST activeRouteSegment
         if (currentCargo == maxCargoCapacity)
         {
-            //TODO Leave current LoadingDock
-            //origin.GetComponent<Storage>().OnVehicleDepart(this);
+            Debug.Log("Cargo Full, Move on");
             status = VehicleStatus.Moving;
+            activeRouteSegment.destinationStorage.OnVehicleDepart(this);
+            UpdateActiveRouteSegment();
         }
     }
 }

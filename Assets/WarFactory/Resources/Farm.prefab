@@ -37,7 +37,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4611640792514514}
   - component: {fileID: 65271477022304168}
-  - component: {fileID: 114344373988771998}
   - component: {fileID: 114827313753385272}
   m_Layer: 0
   m_Name: Farm
@@ -200,23 +199,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.9537985, z: 1.618431}
   m_Center: {x: -0.0000000018549362, y: 0.47689927, z: -0.30921537}
---- !u!114 &114344373988771998
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1543344979124286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e42267885519611409dd532f19ca2d5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  connectionRadii: 3
-  roadConnection:
-    connectedRoad: {fileID: 0}
-    connectedPosition: {x: 0, y: 0, z: 0}
-    roadIndex: 0
-    sqrDist: 0
 --- !u!114 &114827313753385272
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -228,17 +210,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbacc16c4d82e540a856c28bad5a979, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  produce: {fileID: 0}
-  MaxStorageStacks: 10
-  numberOfParallelProductions: 1
-  maxNumberOfInputs: 0
-  maxNumberOfOutputs: 1
+  connectionRadii: 3
+  roadConnection:
+    connectedRoad: {fileID: 0}
+    connectedPosition: {x: 0, y: 0, z: 0}
+    roadIndex: 0
+    sqrDist: 0
   vehicleLoadTime: 1
-  produceTime: 1
-  vehicleAvailable: 0
   vehiclePreFab: {fileID: 1800341346533286, guid: 73f136692ef3b6f4bab5a0475c3f5679,
     type: 2}
   vehicleAtDock: {fileID: 0}
+  vehicles: []
+  produce: {fileID: 0}
+  MaxStorageStacks: 30
+  maxNumberOfInputs: 0
+  maxNumberOfOutputs: 1
+  currentStorageStacks: 0
+  handlingVehicle: 0
+  numberOfParallelProductions: 1
+  produceTime: 1
   isProducing: 0
   _productionIsRunning: 0
-  currentStorageStacks: 0

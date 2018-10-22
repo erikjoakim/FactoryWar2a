@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,38 +8,94 @@ public class RouteSegment {
 
     public enum RouteSegmentAction
     {
-        Load, Unload, LoadAndUnload, Waypoint
+        Load, Unload, Waypoint
     }
 
-    public Storage storage;
-    public ResourceType cargoToLoad;
-    public ResourceType cargoToUnload;
-    public float cargoAmountToLoad;
-    public float cargoAmountToUnload;
+    public Storage destinationStorage;
+    public Road road;
+    public int storageRoadIndex;
+    /*public Vector3[] roadIndexPoints
+    { get
+        {
+            return destinationStorage.roadConnection.connectedRoad.evenlySpacedPoints;
+        } }
+        */
+    public ResourceTypes cargo;
+    public float cargoAmount;
     public RouteSegmentAction action;
+    public bool transferAllCargo=false;
+    public bool active = true;
     
-
-    public RouteSegment(Storage storage, RouteSegmentAction action, ResourceType cargoToLoad, float cargoToLoadAmount, ResourceType cargoToUnload, float cargoToUnloadAmount)
+    public RouteSegment(Road road, int roadIndex)
     {
-        this.storage = storage;
+        action = RouteSegmentAction.Waypoint;
+        this.road = road;
+        this.storageRoadIndex = roadIndex;
+    }
+
+    public RouteSegment(Storage destination, RouteSegmentAction action, ResourceTypes cargo, float cargoAmount)
+    {
+        this.destinationStorage = destination;
         this.action = action;
-        this.cargoAmountToLoad = cargoToLoadAmount;
-        this.cargoAmountToUnload = cargoToUnloadAmount;
-        this.cargoToLoad = cargoToLoad;
-        this.cargoToUnload = cargoToUnload;
+        if (action != RouteSegmentAction.Waypoint && cargoAmount == 0)
+        {
+            transferAllCargo = true;
+        }
+        this.cargoAmount = cargoAmount;
+        this.cargo = cargo;
+        road = destination.roadConnection.connectedRoad;
+        //roadIndexPoints = 
+        storageRoadIndex = destinationStorage.roadConnection.roadIndex;
     }
 
     public RouteSegment(Storage storage)
     {
-        this.storage = storage;
-        this.action = RouteSegmentAction.LoadAndUnload;
-        this.cargoAmountToLoad = 10;
-        this.cargoToLoad = ResourceType.Weat;
+        this.destinationStorage = storage;
+        this.action = RouteSegmentAction.Load;
+        this.cargoAmount = 10;
+        this.cargo = ResourceTypes.Weat;
     }
 }
 [System.Serializable]
 public class Route
 {
+    public bool active = true;
+    private bool first = true;
+    public int activeRouteSegmentIndex = 0;
     public List<RouteSegment> routeSegments = new List<RouteSegment>();
-    
+
+    internal RouteSegment GetNextActiveSegment()
+    {
+        Debug.Log("GetNextActiveSegment");
+        if (first)
+        {
+            first = false;
+            return routeSegments[activeRouteSegmentIndex];
+        }
+        else
+        {
+            activeRouteSegmentIndex++;
+            if (activeRouteSegmentIndex > routeSegments.Count-1)
+            {
+                activeRouteSegmentIndex = 0;
+            }
+        }
+        
+        for (int i = activeRouteSegmentIndex; i < routeSegments.Count; i++)
+        {
+            if (routeSegments[i].active)
+            {
+                return routeSegments[i];
+            }
+        }
+        for (int i = 0; i < activeRouteSegmentIndex; i++)
+        {
+            if (routeSegments[i].active)
+            {
+                return routeSegments[i];
+            }
+        }
+        
+        return null;
+    }
 }

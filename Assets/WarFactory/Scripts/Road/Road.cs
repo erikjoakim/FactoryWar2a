@@ -27,6 +27,7 @@ public class Road : MonoBehaviour
         anchorPoints = new List<GameObject>();
         connectedObjects = new intObjDict();
         connectedRoads = new intObjDict();
+        spacing = GameManager.instance.roadSpacing;
     }
 
     private void Update()
@@ -82,9 +83,9 @@ public class Road : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         
         int textureRepeat = Mathf.RoundToInt(tiling * evenlySpacedPoints.Length * spacing * .05f);
-        GetComponent<MeshRenderer>().sharedMaterial.mainTextureScale = new Vector2(1, textureRepeat);
+        GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(1, textureRepeat);
 
-        DisplayAnchorPoints();
+        //DisplayAnchorPoints();
     }
 
     private Bounds UpdateBounds()

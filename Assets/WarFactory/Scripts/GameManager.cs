@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
     //TODO CREATE FLEXIBLE PRODUCE SO VEHICLES CAN TRANSPORT DIFFERENT PRODUCE
     //TODO HOW TO SET DESTINATION FOR VEHICLE
     //TODO HOW TO CREATE ROUTE FOR VEHICLE    
+    public float roadSpacing = 0.2f;
     public RoadNetworkManager roadNetworkManager;
     public static GameManager instance = null;
     public static InputStatus currentInputStatus;
@@ -53,16 +54,16 @@ public class GameManager : MonoBehaviour {
     private void Start()
     {
         roadNetworkManager = new RoadNetworkManager();
-        player = Instantiate(Resources.Load<GameObject>("GruntHQ"),playerStartPosition.position,Quaternion.identity);
-        Instantiate(Resources.Load<GameObject>("Vehicle"), playerStartPosition.position + new Vector3(1,0,1), Quaternion.identity);
+        //player = Instantiate(Resources.Load<GameObject>("GruntHQ"),playerStartPosition.position,Quaternion.identity);
+        //Instantiate(Resources.Load<GameObject>("Vehicle"), playerStartPosition.position + new Vector3(1,1,1), Quaternion.identity);
 
-        player.GetComponentInChildren<Renderer>().material.color = Color.blue;
-        player.tag = "Player";
+        //player.GetComponentInChildren<Renderer>().material.color = Color.blue;
+        //player.tag = "Player";
        
 
-        AI1 = Instantiate(Resources.Load<GameObject>("GruntHQ"), AI1StartPosition.position, Quaternion.identity);
-        AI1.GetComponentInChildren<Renderer>().material.color = Color.red;
-        AI1.tag = "AI";
+        //AI1 = Instantiate(Resources.Load<GameObject>("GruntHQ"), AI1StartPosition.position, Quaternion.identity);
+        //AI1.GetComponentInChildren<Renderer>().material.color = Color.red;
+        //AI1.tag = "AI";
     }
 
     //***********

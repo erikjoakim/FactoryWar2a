@@ -1,0 +1,148 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1387340844276708}
+  m_IsPrefabAsset: 1
+--- !u!1 &1387340844276708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4238270636542826}
+  - component: {fileID: 33953277169211306}
+  - component: {fileID: 23992131106779486}
+  - component: {fileID: 65399486228279228}
+  - component: {fileID: 114960109469971112}
+  - component: {fileID: 114895933100686700}
+  m_Layer: 0
+  m_Name: Armoury2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4238270636542826
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 7.2143135, y: -0.00000022841859, z: 7.9865737}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23992131106779486
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
+  m_Materials:
+  - {fileID: 2100000, guid: df442e382b9920d4b95abe753c839ec2, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &33953277169211306
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_Mesh: {fileID: 4300000, guid: 1250c238fe988de4ab9fc03d6ac3fe25, type: 3}
+--- !u!65 &65399486228279228
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.84252465, y: 1.5546007, z: 1.6883321}
+  m_Center: {x: -0.00007224083, y: 0.77730024, z: 0.035657585}
+--- !u!114 &114895933100686700
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3244e3f4b58db4f9e7e7db18f4864a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectionRadii: 3
+  roadConnection:
+    connectedRoad: {fileID: 0}
+    connectedPosition: {x: 0, y: 0, z: 0}
+    roadIndex: 0
+    sqrDist: 0
+  vehicleLoadTime: 1
+  vehiclePreFab: {fileID: 1800341346533286, guid: 73f136692ef3b6f4bab5a0475c3f5679,
+    type: 2}
+  vehicleAtDock: {fileID: 0}
+  vehicles: []
+  produce: {fileID: 0}
+  MaxStorageStacks: 100
+  maxNumberOfInputs: 0
+  maxNumberOfOutputs: 1
+  currentStorageStacks: 0
+  handlingVehicle: 0
+--- !u!114 &114960109469971112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1387340844276708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef7be4afeae88df479d8c9c573b82c72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  supportRange: 20
+  maxNoGrunts: 6
+  resourcesForGrunt: 10
+  gruntIngrediens: 2
+  gruntPrefab: {fileID: 1915769858020880, guid: 4a21095e16ba44b439a8e5354f83d6d9,
+    type: 2}
+  spawnOffset: 2
+  gruntEnergyRequirement: 2
+  grunts: []

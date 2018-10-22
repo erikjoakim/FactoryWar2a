@@ -14,11 +14,11 @@ public class GruntHandler : MovableObject {
         prepping
     }
 
-    
-    
     public float visionRange = 20;
     public float rndNess = 0.1f;
-
+    public float maxEnergy = 100;
+    public float currentEnergy;
+    public float energyConsumption=2;
     public GruntStatus status = GruntStatus.resting;
 
     
@@ -31,12 +31,24 @@ public class GruntHandler : MovableObject {
         transform.tag = transform.parent.tag;
         dmgDealer = GetComponent<DamageDealer>();
         InvokeRepeating("AcquireTargetAndAttack", 1f, dmgDealer.attackSpeed);
+        currentEnergy = maxEnergy;
+        InvokeRepeating("consumeEnergy", 1f, 1f);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
         
+    }
+
+    public void receiveEnergy(float amount)
+    {
+        currentEnergy = Mathf.Clamp(currentEnergy + amount,0, maxEnergy);
+    }
+
+    private void consumeEnergy()
+    {
+        currentEnergy -= energyConsumption;
     }
 
     private void AcquireTargetAndAttack()
